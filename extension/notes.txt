@@ -1,0 +1,35 @@
+<div id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0" class="cssClassContainer" style="top: 75%; height: 48px; width: 100%; left: 0%;">
+	<div id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_ClassInnerContainer" class="cssClassInnerContainer" style="background-color:#FF99CC;border-color:#FF99CC;">
+		<div id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_ClassInnerPanel" class="cssClassInnerPanel">
+			<input name="ctl00$Content$ctlTimetableMain$MonDayCol$Body$0$HiddenStartTm" type="hidden" id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_HiddenStartTm" class="cssHiddenStartTm" value="4:15pm">
+			<input name="ctl00$Content$ctlTimetableMain$MonDayCol$Body$0$HiddenEndTm" type="hidden" id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_HiddenEndTm" class="cssHiddenEndTm" value="5:15pm">
+			<div id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_BodyPanel" class="cssTtableBodyPanel">
+				<div id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_BodyContentPanel" class="cssTtableBodyContentPanel">
+					<br> <span class="cssTtableClsSlotWhat"> Lecture 1 (1)</span> <span class="cssTtableClsSlotWhen">, 4:15 pm-5:15 pm</span>  <br> <span class="cssTtableClsSlotWhere">Parkville 174 407</span>
+				</div>
+			</div>
+			<div id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_IconPanel" class="cssTtableIconPanel">
+				<img id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_IconPanel-0" title="Registered Class" class="cssTtableIconReg" src="../App_Themes/eStudent/img/timetable/orb_ok-sml.png" style="border-width:0px;">
+			</div>
+			<div id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_FooterPanel" class="cssTtableFooterPanel">
+
+			</div>
+			<div id="ctl00_Content_ctlTimetableMain_MonDayCol_Body_0_HeaderPanel" class="cssTtableHeaderPanel">
+				COMP30022
+			</div>
+		</div>
+	</div>
+</div>
+
+
+SUBJECT CODE: .cssTtableHeaderPanel.text()
+  START TIME: .cssHiddenStartTm.value()
+    END TIME: .cssHiddenEndTm.value()
+        WHAT: .cssTtableClsSlotWhat.text()
+    LOCATION: .cssTtableClsSlotWhere.text()
+
+"Stu, what are you doing?"
+"Writing a jQuery script to process my student timetable page into a vCal file."
+"It’s four o’clock in the afternoon, why on earth are you Writing a jQuery script to process your student timetable page into a vCal file?"
+"…Because I’ve lost control of my life."
+
