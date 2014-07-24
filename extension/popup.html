@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>UoM Timetable to iCal</title>
+    <style type="text/css">
+    body {
+        min-width: 357px;
+        overflow-x: hidden;
+    }
+    /*img {
+			margin: 5px;
+			border: 2px solid black;
+			vertical-align: middle;
+			width: 75px;
+			height: 75px;
+		}*/
+    </style>
+    <!--
+		- JavaScript and HTML must be in separate files: see our Content Security
+		- Policy documentation[1] for details and explanation.
+		-
+		- [1]: http://developer.chrome.com/extensions/contentSecurityPolicy.html
+	 -->
+	<script type="text/javascript" src="popup.js"></script>
+</head>
+
+<body>
+    <div>
+    	<p><span id="subjectCount">0</span> subjects detected</p>
+        <p><span id="classCount">0</span> classes detected</p>
+    </div>
+    <div>
+    <h2>Options</h2>
+    <form action="">
+        <!-- 	<ul>
+		<li><input type="radio" name="dateSource" value="online">Source from UoM page</li>
+		<li><input type="radio" name="dateSource" value="custom">Enter manually</li>
+	</ul> -->
+        <p>Starting Date:
+            <input type="text" value="28 July, 2014">
+        </p>
+        <p>
+        	<input type="checkbox" name="weeklyYN" value="">Add week-long events for each week #
+        </p>
+        <button id="scriptStarter">Create Timetable</button>
+    </form>
+    </div>
+</body>
+
+</html>

@@ -1,20 +1,26 @@
 {
-  "manifest_version": 2,
+    "manifest_version": 2,
 
-  "name": "Unimelb Timetable to iCal",
-  "version": "1.0.0",
-  "description": "Converts the Unimelb timetable page into an iCal file",
+    "name": "Unimelb Timetable to iCal",
+    "version": "1.0.0",
+    "description": "Converts the Unimelb timetable page into an iCal file",
 
-  "icons": {
-    "128" : "icon-128.png"
-  },
+    "icons": {
+        "128": "icon-128.png"
+    },
 
-  "browser_action": {
-	"default_icon": "icon-128.png"
-  },
+    "page_action": {
+        "default_icon": "icon-128.png",
+        "default_title": "UoM Timetable detected",
+        "default_popup": "popup.html"
+    },
 
-  "background": { "page": "background.html" },
-  "permissions": [ "tabs", "http://*/*", "https://*/*" ],
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
 
-  "web_accessible_resources": [ "contentscript.js" ]
+    "permissions": ["declarativeContent", "tabs", "https://prod.ss.unimelb.edu.au/*"],
+
+    "web_accessible_resources": ["contentscript.js"]
 }
