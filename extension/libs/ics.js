@@ -17,6 +17,10 @@ var ics = function() {
     ].join(SEPARATOR);
     var calendarEnd = SEPARATOR + 'END:VCALENDAR';
 
+    var dateFormatter = function(date) {
+        
+    };
+
     return {
         /**
          * Returns events array
@@ -42,7 +46,7 @@ var ics = function() {
          * @param  {string} begin       Beginning date of event
          * @param  {string} stop        Ending date of event
          */
-        'addEvent': function(subject, description, location, begin, stop) {
+        'addEvent': function(subject, description, location, begin, stop, until, exclude) {
             // I'm not in the mood to make these optional... So they are all required
             if (typeof subject === 'undefined' ||
                 typeof description === 'undefined' ||
@@ -56,6 +60,8 @@ var ics = function() {
             //TODO add time and time zone? use moment to format?
             var start_date = new Date(begin);
             var end_date = new Date(stop);
+            var repeat_date;
+            var exclude_date;
 
             var start_year = ("0000" + (start_date.getFullYear().toString())).slice(-4);
             var start_month = ("00" + ((start_date.getMonth() + 1).toString())).slice(-2);
@@ -71,23 +77,57 @@ var ics = function() {
             var end_minutes = ("00" + (end_date.getMinutes().toString())).slice(-2);
             var end_seconds = ("00" + (end_date.getMinutes().toString())).slice(-2);
 
+            if (until) {
+                repeat_date = new Date(until)
+                var repeat_year = ("0000" + (repeat_date.getFullYear().toString())).slice(-4);
+                var repeat_month = ("00" + ((repeat_date.getMonth() + 1).toString())).slice(-2);
+                var repeat_day = ("00" + ((repeat_date.getDate()).toString())).slice(-2);
+                var repeat_hours = ("00" + (repeat_date.getHours().toString())).slice(-2);
+                var repeat_minutes = ("00" + (repeat_date.getMinutes().toString())).slice(-2);
+                var repeat_seconds = ("00" + (repeat_date.getMinutes().toString())).slice(-2);
+
+                var repeat_time = 'T' + repeat_hours + repeat_minutes + repeat_seconds;
+
+                var repeat = repeat_year + repeat_month + repeat_day + repeat_time;
+            }
+
+            if (exclude) {
+                exclude_date = new Date(exclude);
+                var exclude_year = ("0000" + (exclude_date.getFullYear().toString())).slice(-4);
+                var exclude_month = ("00" + ((exclude_date.getMonth() + 1).toString())).slice(-2);
+                var exclude_day = ("00" + ((exclude_date.getDate()).toString())).slice(-2);
+                var exclude_hours = ("00" + (exclude_date.getHours().toString())).slice(-2);
+                var exclude_minutes = ("00" + (exclude_date.getMinutes().toString())).slice(-2);
+                var exclude_seconds = ("00" + (exclude_date.getMinutes().toString())).slice(-2);
+
+                var exclude_time = 'T' + repeat_hours + repeat_minutes + repeat_seconds;
+
+                var exclusion = repeat_year + repeat_month + repeat_day + repeat_time;
+            }
+
             var start_time = 'T' + start_hours + start_minutes + start_seconds;
             var end_time = 'T' + end_hours + end_minutes + end_seconds;
 
             var start = start_year + start_month + start_day + start_time;
             var end = end_year + end_month + end_day + end_time;
+            
+            //TODO exdate
 
             var calendarEvent = [
                 'BEGIN:VEVENT',
                 'CLASS:PUBLIC',
                 'DESCRIPTION:' + description,
-                'DTSTART;VALUE=DATE:' + start,
+                'DTSTART;VALUE=DATE:' + start];
+            if (until) { calendarEvent.push("RRULE:FREQ=WEEKLY;UNTIL="+repeat); }
+            if (exclude) { calendarEvent.push("EXDATE:"+exclusion); }
+            calendarEvent = calendarEvent.concat([
                 'DTEND;VALUE=DATE:' + end,
                 'LOCATION:' + location,
                 'SUMMARY;LANGUAGE=en-us:' + subject,
                 'TRANSP:TRANSPARENT',
                 'END:VEVENT'
-            ].join(SEPARATOR);
+            ]);
+            calendarEvent = calendarEvent.join(SEPARATOR);
 
             calendarEvents.push(calendarEvent);
             return calendarEvent;

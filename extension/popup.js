@@ -7,8 +7,10 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
+var eventListener;
+
 document.addEventListener('DOMContentLoaded', function() {
-	document.getElementById("scriptStarter").addEventListener('click',startScript,false);
+	eventListener = document.getElementById("scriptStarter").addEventListener('click',startScript);
 	chrome.tabs.executeScript(null, {file: "libs/jquery-2.1.1.min.js"});
 	chrome.tabs.executeScript(null, {file: "libs/ics.deps.min.js"});
 	chrome.tabs.executeScript(null, {file: "libs/ics.js"});
@@ -18,9 +20,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 var startScript = function() {
 	console.log("Starting script...");
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+	console.log(eventListener);
+	/*chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, {greeting: "makeIcs"}, function(response) {
 			console.log(response.farewell);
 		});
-	});
+	});*/
 };

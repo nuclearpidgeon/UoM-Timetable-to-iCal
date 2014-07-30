@@ -11,6 +11,7 @@ chrome.runtime.sendMessage(message, function(response) {
 
 var makeIcs = function() {
 	var startingDate = new Date("28 July, 2014");
+	var endingDate = new Date("26 October, 2014");
 	var dateFormat = function(rawtime, day) {
 		//date fields on page don't match dateSting format for JavaScript
 		//need to add a space before am/pm and seconds field
@@ -33,7 +34,7 @@ var makeIcs = function() {
 			var end = dateFormat($(".cssHiddenEndTm", this).val(),weekDay);
 			var location = $(".cssTtableClsSlotWhere", this).text();
 			console.log(subjectCode + " " + name + " " + start + " -> " + end + " @ " + location);
-			cal.addEvent(subjectCode+" "+name, name, location, start, end);
+			cal.addEvent(subjectCode+" "+name, name, location, start, end, endingDate);
 		});
 	});
 
