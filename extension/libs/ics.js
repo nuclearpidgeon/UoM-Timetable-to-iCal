@@ -100,9 +100,10 @@ var ics = function() {
                 var exclude_minutes = ("00" + (exclude_date.getMinutes().toString())).slice(-2);
                 var exclude_seconds = ("00" + (exclude_date.getMinutes().toString())).slice(-2);
 
-                var exclude_time = 'T' + repeat_hours + repeat_minutes + repeat_seconds;
+                
+                var exclude_time = 'T' + exclude_hours + exclude_minutes + exclude_seconds;
 
-                var exclusion = repeat_year + repeat_month + repeat_day + repeat_time;
+                var exclusion = exclude_year + exclude_month + exclude_day + exclude_time;
             }
 
             var start_time = 'T' + start_hours + start_minutes + start_seconds;

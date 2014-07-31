@@ -21,9 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
 var startScript = function() {
 	console.log("Starting script...");
 	console.log(eventListener);
-	/*chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, {greeting: "makeIcs"}, function(response) {
 			console.log(response.farewell);
 		});
-	});*/
+	});
 };

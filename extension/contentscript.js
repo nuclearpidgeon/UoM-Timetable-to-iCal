@@ -10,8 +10,11 @@ chrome.runtime.sendMessage(message, function(response) {
 });
 
 var makeIcs = function() {
+	//set up semester boundaries
 	var startingDate = new Date("28 July, 2014");
 	var endingDate = new Date("26 October, 2014");
+	var breakStartDate = new Date("29 September, 2014");
+
 	var dateFormat = function(rawtime, day) {
 		//date fields on page don't match dateSting format for JavaScript
 		//need to add a space before am/pm and seconds field
@@ -24,17 +27,23 @@ var makeIcs = function() {
 
 	$(".cssTtbleColDay").each(function(dayIndex){
 		//iterating over each weekday
-		console.log("DAY "+dayIndex);
+		//set up variable for the day of the week
 		var weekDay = new Date(startingDate.getTime() + dayIndex*(24 * 60 * 60 * 1000));
+		var exludeDay = new Date(breakStartDate.getTime() + dayIndex*(24 * 60 * 60 * 1000));
+		console.log("DAY "+dayIndex);
 		$(classSelector, this).each(function(index){
 			//iterating over each subject in a weekday
+			//collect data
 			var subjectCode = $(".cssTtableHeaderPanel", this).text().replace(/[\n\t\r]/g,"");
 			var name = $(".cssTtableClsSlotWhat", this).text().replace(/[\n\t\r]/g,"");	
 			var start = dateFormat($(".cssHiddenStartTm", this).val(),weekDay);
 			var end = dateFormat($(".cssHiddenEndTm", this).val(),weekDay);
 			var location = $(".cssTtableClsSlotWhere", this).text();
-			console.log(subjectCode + " " + name + " " + start + " -> " + end + " @ " + location);
-			cal.addEvent(subjectCode+" "+name, name, location, start, end, endingDate);
+			//determine exlusion date
+			var exludeDate = dateFormat($(".cssHiddenStartTm", this).val(),exludeDay);
+			//log and process into event
+			console.log(subjectCode + " " + name + " @ " + location + " \n" + start + " -> " + end + " except "+exludeDate);
+			cal.addEvent(subjectCode+" "+name, name, location, start, end, endingDate, exludeDate);
 		});
 	});
 
