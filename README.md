@@ -13,5 +13,6 @@ Whenever you reach the UoM timetable page, an icon will appear in the address ba
 
 # Credits
 
-Some dude for making the ics.js library. Apologies for making an absolute mess of it adding in the ability to do repeats and exclusions - I promise I'll tidy it up and send a pull request soon.
-\#thankyoubasedjquery
+* **ncwell** on GitHub for making the [ics.js](https://github.com/nwcell/ics.js/) library. Apologies for making an absolute mess of it adding in the ability to do repeats and exclusions - I promise I'll tidy it up and send a pull request soon.
+* [jQuery](http://www.jquery.com/) for being the greatest thing since sliced bread.
+* **Google** for developing the Chrome extension framework and store.
