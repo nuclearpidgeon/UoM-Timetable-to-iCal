@@ -68,14 +68,14 @@ var ics = function() {
             var start_day = ("00" + ((start_date.getDate()).toString())).slice(-2);
             var start_hours = ("00" + (start_date.getHours().toString())).slice(-2);
             var start_minutes = ("00" + (start_date.getMinutes().toString())).slice(-2);
-            var start_seconds = ("00" + (start_date.getMinutes().toString())).slice(-2);
+            var start_seconds = ("00" + (start_date.getSeconds().toString())).slice(-2);
 
             var end_year = ("0000" + (end_date.getFullYear().toString())).slice(-4);
             var end_month = ("00" + ((end_date.getMonth() + 1).toString())).slice(-2);
             var end_day = ("00" + ((end_date.getDate()).toString())).slice(-2);
             var end_hours = ("00" + (end_date.getHours().toString())).slice(-2);
             var end_minutes = ("00" + (end_date.getMinutes().toString())).slice(-2);
-            var end_seconds = ("00" + (end_date.getMinutes().toString())).slice(-2);
+            var end_seconds = ("00" + (end_date.getSeconds().toString())).slice(-2);
 
             if (until) {
                 repeat_date = new Date(until)
@@ -84,7 +84,7 @@ var ics = function() {
                 var repeat_day = ("00" + ((repeat_date.getDate()).toString())).slice(-2);
                 var repeat_hours = ("00" + (repeat_date.getHours().toString())).slice(-2);
                 var repeat_minutes = ("00" + (repeat_date.getMinutes().toString())).slice(-2);
-                var repeat_seconds = ("00" + (repeat_date.getMinutes().toString())).slice(-2);
+                var repeat_seconds = ("00" + (repeat_date.getSeconds().toString())).slice(-2);
 
                 var repeat_time = 'T' + repeat_hours + repeat_minutes + repeat_seconds;
 
@@ -98,7 +98,7 @@ var ics = function() {
                 var exclude_day = ("00" + ((exclude_date.getDate()).toString())).slice(-2);
                 var exclude_hours = ("00" + (exclude_date.getHours().toString())).slice(-2);
                 var exclude_minutes = ("00" + (exclude_date.getMinutes().toString())).slice(-2);
-                var exclude_seconds = ("00" + (exclude_date.getMinutes().toString())).slice(-2);
+                var exclude_seconds = ("00" + (exclude_date.getSeconds().toString())).slice(-2);
 
                 
                 var exclude_time = 'T' + exclude_hours + exclude_minutes + exclude_seconds;
@@ -106,8 +106,21 @@ var ics = function() {
                 var exclusion = exclude_year + exclude_month + exclude_day + exclude_time;
             }
 
-            var start_time = 'T' + start_hours + start_minutes + start_seconds;
-            var end_time = 'T' + end_hours + end_minutes + end_seconds;
+            var start_time = "";
+            var end_time = "";
+            //hack for getting day-long events working
+            if (start_date.getHours()   == 0 && 
+                start_date.getMinutes() == 0 && 
+                start_date.getSeconds() == 0 &&
+                end_date.getHours()   == 0 && 
+                end_date.getMinutes() == 0 && 
+                end_date.getSeconds() == 0 ) {
+                //don't include time, daylong event
+            } else {
+                //include time
+                start_time = 'T' + start_hours + start_minutes + start_seconds;
+                end_time = 'T' + end_hours + end_minutes + end_seconds;
+            }
 
             var start = start_year + start_month + start_day + start_time;
             var end = end_year + end_month + end_day + end_time;
@@ -118,11 +131,11 @@ var ics = function() {
                 'BEGIN:VEVENT',
                 'CLASS:PUBLIC',
                 'DESCRIPTION:' + description,
-                'DTSTART;VALUE=DATE:' + start];
+                'DTSTART;TZID=Australia/Melbourne:' + start];
             if (until) { calendarEvent.push("RRULE:FREQ=WEEKLY;UNTIL="+repeat); }
-            if (exclude) { calendarEvent.push("EXDATE:"+exclusion); }
+            if (exclude) { calendarEvent.push("EXDATE;TZID=Australia/Melbourne:"+exclusion); }
             calendarEvent = calendarEvent.concat([
-                'DTEND;VALUE=DATE:' + end,
+                'DTEND;TZID=Australia/Melbourne:' + end,
                 'LOCATION:' + location,
                 'SUMMARY;LANGUAGE=en-us:' + subject,
                 'TRANSP:TRANSPARENT',

@@ -20,7 +20,12 @@
         "persistent": false
     },
 
-    "permissions": ["declarativeContent", "tabs", "https://prod.ss.unimelb.edu.au/*"],
+    "permissions": [
+        "declarativeContent", 
+        "tabs", 
+        "https://prod.ss.unimelb.edu.au/*",
+        "https://handbook.unimelb.edu.au/*"
+    ],
 
     "web_accessible_resources": ["contentscript.js"]
 }
