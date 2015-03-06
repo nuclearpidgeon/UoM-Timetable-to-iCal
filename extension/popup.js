@@ -1,6 +1,7 @@
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.greeting == "pageData") {
+			var datesURL = "http://www.unimelb.edu.au/unisec/PDates/";
 			document.getElementById("classCount").innerHTML=request.classCount.toString();
 			document.getElementById("subjectCount").innerHTML=request.subjectCount.toString();
 			sendResponse({farewell: "goodbye"});
