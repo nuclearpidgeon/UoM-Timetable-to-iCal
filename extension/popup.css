@@ -1,0 +1,109 @@
+body {
+    min-width: 357px;
+    overflow-x: hidden;
+    font-family: 'Roboto','Helvetica','Arial', sans-serif;
+    font-weight: 300;
+    color: #111;
+    background-color: #ddd;
+    margin: 0 0 8px 0;
+}
+a {
+    color: #27D;
+}
+h1 {
+    font-size: 1.5em;
+    text-decoration: underline;
+    color: #fff;
+    margin-bottom: 0;
+}
+h2 {
+    font-size: 1.3em;
+    text-decoration: underline;
+}
+h3 {
+    font-size: 1.1em;
+    color:#555;
+}
+ul {
+    padding-left: 2em;
+}
+p, li {
+    font-size: 1em;
+}
+section {
+    margin: 0 2em;
+}
+header {
+    background-color: #036;
+    padding: 3em 0 0.5em 1.5em;
+}
+main {
+    padding: 0 1.5em;
+}
+.radio label {
+    display: block;
+}
+input {
+    margin-left: 1em;
+}
+label#weeklyYN {
+    padding:0 4px;
+}
+#dateSourceFields {
+    margin-bottom: 1em;
+}
+#dateSourceFields select {
+    margin-left: 2em;
+}
+#semesterDatesFetchStatus {
+    margin: 0.5em 0;
+}
+#semesterDatesFetchStatus .success {
+    margin-bottom: 0.5em;
+}
+.fetching {
+    color: #555;
+}
+.success {
+    color: #082;
+}
+.error {
+    color: #C44;
+}
+.notfound {
+    color: #C50;
+}
+input[type="button"] {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    border-radius: 4px;
+    padding: 1em;
+    margin: 2em auto;
+    display: block;
+    font-size: 1.2em;
+}
+fieldset {
+    display: table;
+    border: 0;
+    margin: 0;
+    padding: 0.5em 1em;
+    border: 1px solid #555;
+    border-radius: 0.5em;
+    background-color: #ddd;
+}
+fieldset[disabled="disabled"] {
+    cursor: no-drop;
+    border-color: rgb(166, 166, 166);
+    background-color: #eee;
+    color: grey;
+}
+fieldset[disabled="disabled"] * {
+    cursor: not-allowed;
+}
+fieldset .field {
+    display: table-row;
+}
+fieldset .field > * {
+    display: table-cell;
+}
