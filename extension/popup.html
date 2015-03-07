@@ -42,11 +42,14 @@
     .radio label {
         display: block;
     }
-    input[type="checkbox"] {
+    input {
         margin-left: 20px;
     }
     label#weeklyYN {
         padding:0 4px;
+    }
+    #dateSourceFields select {
+        margin-left: 40px;
     }
     input[type="button"] {
         color: #fff;
@@ -91,12 +94,12 @@
                     <input type="radio" name="dateSource" value="online" checked="checked">
                     Source from UoM page
                 </label>
+                <div id="semesterDatesFetchStatus"></div>
                 <label>
                     <input type="radio" name="dateSource" value="custom">
                     Enter manually
                 </label>
             </div>
-            <div id="semesterDatesFetchStatus"></div>
             <fieldset id="dateFields" disabled="disabled">
                 <div>
                     <label>Starting Date:</label>

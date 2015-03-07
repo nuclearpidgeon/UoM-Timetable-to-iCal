@@ -7,6 +7,9 @@ chrome.runtime.onInstalled.addListener(function() {
 				// Match on timetable URL
 				new chrome.declarativeContent.PageStateMatcher({
 					pageUrl: {urlContains: "prod.ss.unimelb.edu.au/student/SM/StudentTtable10.aspx"}
+				}),
+				new chrome.declarativeContent.PageStateMatcher({
+					pageUrl: {urlContains: "UoM-Timetable-to-iCal/extension/test/testTimetable1.htm"}
 				})
 			],
 			// Show the page action on this condition
