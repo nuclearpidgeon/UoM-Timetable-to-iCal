@@ -28,12 +28,12 @@ chrome.runtime.sendMessage(message, function(response) {
 	console.log(response.farewell);
 });
 
-var makeIcs = function(weekEvents) {
+var makeIcs = function(startDate, endDate, weekEvents) {
 	if (weekEvents !== true) weekEvents = false;
 	//set up semester boundaries
-	var startingDate = new Date("28 July, 2014");
-	var endingDate = new Date("26 October, 2014");
-	var breakStartDate = new Date("29 September, 2014");
+	var startingDate = new Date(startDate);
+	var endingDate = new Date(endDate);
+	var breakStartDate = new Date("6 April, 2015");
 
 	var dateFormat = function(rawtime, day) {
 		//date fields on page don't match dateSting format for JavaScript
@@ -103,7 +103,11 @@ var makeIcs = function(weekEvents) {
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.greeting == "makeIcs") {
-			makeIcs(request.weeklyEvents);
+			makeIcs(
+				request.startDate,
+				request.endDate,
+				request.weeklyEvents
+			);
 			sendResponse({farewell: "executed makeIcs()"});
 		}
 	}

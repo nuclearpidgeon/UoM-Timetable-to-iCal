@@ -62,7 +62,10 @@ var startScript = function() {
     console.log(eventListener);
     message = {
         greeting: "makeIcs", 
-        weeklyEvents: document.getElementById("weeklyYN").checked
+        weeklyEvents: document.getElementById("weeklyYN").checked,
+        startDate: document.getElementById("startDate").value,
+        endDate: document.getElementById("endDate").value
+
     }
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
@@ -82,9 +85,19 @@ var getSemesterDates = function() {
         function(responseText, textStatus, jqXHR) {
             if ( textStatus == "notmodified" || textStatus == "success") {
                 // whoohoo we got a page
+                // try and find year
+                var year = results.find('h2:contains("Principal Dates")').text().match('[0-9]{4}');
+                if (typeof(year) == "object") {
+                    // assume regex matched
+                    year = year[0];
+                }
+                else {
+                    year = new Date().getFullYear().toString()
+                }
+                // try and find semester dates
                 var dates = [];
                 results.find('table').find('td:contains("Semester"), td:contains("Term")').parent().each(function() {
-                    var dateRange = sanitizeDateRange($(this).find('td')[0].innerText);
+                    var dateRange = sanitizeDateRange($(this).find('td')[0].innerText, year);
                     var semester = $(this).find('td')[1].innerText;
                     dates.push({"semester":semester,"dateRange":dateRange});
                 });
@@ -119,9 +132,9 @@ var getSemesterDates = function() {
     });
 }
 
-var sanitizeDateRange = function(dateRange) {
+var sanitizeDateRange = function(dateRange, year) {
     var sanitize = function(string, delimiter) {
-        return string.split(delimiter).map(function(splitStr){return splitStr.trim()}).join(',');
+        return string.split(delimiter).map(function(splitStr){return splitStr.trim()+" "+year}).join(',');
     }
     if (dateRange.indexOf(' to ') > -1) {
         // 'to' is the delimiter, swap to comma
