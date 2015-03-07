@@ -5,17 +5,6 @@ var classSelector = ".cssClassContainer";
 var daySelector = ".cssTtbleColDay";
 var subjectSelector = ".cssTtableSspNavContainer"
 
-//find subject and class count
-var message = {
-	greeting: "pageData",
-	classCount: document.querySelectorAll(classSelector).length,
-	subjectCount: document.querySelectorAll(subjectSelector).length
-};
-//send this to the popup
-chrome.runtime.sendMessage(message, function(response) {
-	console.log(response.farewell);
-});
-
 //build subject code -> subject name dictionary
 var subjectMap = {};
 console.log("Building subject code->name map");
@@ -24,7 +13,20 @@ $(".cssTtableSspNavContainer").each(function() {
 	var name =  $(".cssTtableSspNavMasterSpkInfo3 div:first", this).text().trim();
 	console.log(cc+" -> "+name);
 	subjectMap[cc]=name;
-})
+});
+
+//gather page data
+var message = {
+	"greeting": "pageData",
+	"classCount": document.querySelectorAll(classSelector).length,
+	"subjectCount": document.querySelectorAll(subjectSelector).length,
+	"subjectMap": subjectMap
+};
+
+//send this to the popup
+chrome.runtime.sendMessage(message, function(response) {
+	console.log(response.farewell);
+});
 
 var makeIcs = function(weekEvents) {
 	if (weekEvents !== true) weekEvents = false;

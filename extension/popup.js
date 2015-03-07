@@ -2,9 +2,26 @@
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.greeting == "pageData") {
-			// content script has sent through class and subject counts
-			document.getElementById("classCount").innerHTML=request.classCount.toString();
-			document.getElementById("subjectCount").innerHTML=request.subjectCount.toString();
+			// content script has sent through class and subject info
+			// process subjects
+			var subjectCountElem = $('#subjectCount');
+			if (request.subjectMap) {
+				var subjectListString = "<ul>";
+				// iterate over subjects
+				for (var subjectCode in request.subjectMap ) {
+					// check to see if we're looking at a Object property or a subjectMap property
+					if (request.subjectMap.hasOwnProperty(subjectCode)) {
+						subjectListString+="<li>"+subjectCode+": "+request.subjectMap[subjectCode]+"</li>";
+					}
+				}
+				subjectListString += "</ul>";
+				subjectCountElem.after(subjectListString);
+			}
+			subjectCountElem.find("span").text(request.subjectCount.toString());
+			
+			// process classes
+			$("#classCount span").text(request.classCount.toString());
+			// done
 			sendResponse({farewell: "goodbye"});
 		}
 	}
@@ -24,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			$('#semesterDates').removeAttr("disabled");
 		}
 	});
-	$('.main h2').after('<a href="'+chrome.extension.getURL("test/testTimetable1.htm")+'">Maximise</a>')
 	// run page script
 	chrome.tabs.executeScript(null, {file: "libs/jquery-2.1.1.min.js"});
 	chrome.tabs.executeScript(null, {file: "libs/ics.deps.min.js"});

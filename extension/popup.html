@@ -48,6 +48,9 @@
     label#weeklyYN {
         padding:0 4px;
     }
+    #dateSourceFields {
+        margin-bottom: 5px;
+    }
     #dateSourceFields select {
         margin-left: 40px;
     }
@@ -61,8 +64,29 @@
         display: block;
         font-size: 1.2em;
     }
+    fieldset {
+        display: table;
+        border: 0;
+        margin: 0 0 0 10px;
+        padding: 5px 10px;
+        border: 1px solid #555;
+        border-radius: 5px;
+        background-color: #ddd;
+    }
     fieldset[disabled="disabled"] {
-        display: none;
+        cursor: not-allowed;
+        border: 1px solid rgb(166, 166, 166);
+        background-color: #eee;
+        color: grey;
+    }
+    fieldset[disabled="disabled"] * {
+        cursor: not-allowed;
+    }
+    fieldset .field {
+        display: table-row;
+    }
+    fieldset .field > * {
+        display: table-cell;
     }
     </style>
     <!--
@@ -83,8 +107,8 @@
     <div class="main">
         <h2>Detected data</h2>
         <ul>
-            <li><span id="subjectCount">0</span> subjects detected</li>
-            <li><span id="classCount">0</span> classes detected</li>
+            <li id="subjectCount"><span>0</span> subjects detected</li>
+            <li id="classCount"><span>0</span> classes detected</li>
         </ul>
         <h2>Options</h2>
         <form action="">
@@ -101,11 +125,11 @@
                 </label>
             </div>
             <fieldset id="dateFields" disabled="disabled">
-                <div>
+                <div class="field">
                     <label>Starting Date:</label>
                     <input id="startDate" type="text" value="28 July, 2014">
                 </div>
-                <div>
+                <div class="field">
                     <label>Ending Date:</label>
                     <input id="endDate" type="text" value="26 October, 2014">
                 </div>
