@@ -45,6 +45,10 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#semesterDates').removeAttr("disabled");
         }
     });
+    $('#dateFields').find('input').on('change', function() {
+        var sel = $(this);
+        validateDateField(sel);
+    })
     // attach principle dates URL (keeps URL definition in the one place, here)
     $('#principleDatesURL').attr('href', uniPDatesURL);
     // run page script
@@ -96,11 +100,16 @@ var getSemesterDates = function() {
                 }
                 // try and find semester dates
                 var dates = [];
-                results.find('table').find('td:contains("Semester"), td:contains("Term")').parent().each(function() {
-                    var dateRange = sanitizeDateRange($(this).find('td')[0].innerText, year);
-                    var semester = $(this).find('td')[1].innerText;
+                var datesTable = results.find('table')
+
+                var getData = function(i, e) {
+                    var dateRange = sanitizeDateRange($(e).find('td')[0].innerText, year);
+                    var semester = $(e).find('td')[1].innerText;
                     dates.push({"semester":semester,"dateRange":dateRange});
-                });
+                };
+
+                datesTable.find('td:contains("Semester")').parent().each(getData);
+                datesTable.find('td:contains("Term")').parent().each(getData);
                 var resultString = "";
                 if (dates.length > 1) {
                     resultString = '<p class="success">Successfully retrieved '+dates.length.toString()+' date sets from UoM</p>';
@@ -155,6 +164,22 @@ var sanitizeDateRange = function(dateRange, year) {
     }
 }
 
+var validateDateField = function(sel) {
+    console.log('validating');
+    console.log(sel);
+    var date = sel.val();
+    if ( isValidDate ( new Date(date) ) ) {
+        sel.removeClass('error').addClass('success');
+    } else {
+        sel.removeClass('success').addClass('error');
+    }
+}
+
+var isValidDate = function (d) {
+    if ( Object.prototype.toString.call(d) !== "[object Date]" ) return false;
+    return !isNaN(d.getTime());
+}
+
 var updateFetchedDate = function() {
     var dates = $('#semesterDates :selected').val().split(',');
     var startDate = dates[0];
@@ -162,19 +187,8 @@ var updateFetchedDate = function() {
     var endDate = dates[1];
     var endDateSel = $('#endDate');
 
-    var isValidDate = function (d) {
-        if ( Object.prototype.toString.call(d) !== "[object Date]" ) return false;
-        return !isNaN(d.getTime());
-    }
-    var setDateField = function(sel, date) {
-        sel.val(date);
-        if ( isValidDate ( new Date(date) ) ) {
-            sel.removeClass('error').addClass('success');
-        } else {
-            sel.removeClass('success').addClass('error');
-        }
-    }
-
-    setDateField(startDateSel, startDate);
-    setDateField(endDateSel, endDate);
+    startDateSel.val(startDate);
+    validateDateField(startDateSel);
+    endDateSel.val(endDate);
+    validateDateField(endDateSel);
 }

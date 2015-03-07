@@ -101,9 +101,18 @@ fieldset[disabled="disabled"] {
 fieldset[disabled="disabled"] * {
     cursor: not-allowed;
 }
-fieldset .field {
+fieldset > * {
     display: table-row;
 }
-fieldset .field > * {
+fieldset > * > * {
     display: table-cell;
+}
+fieldset > * > *:first-child {
+    text-align: right;
+}
+fieldset .fieldValidation {
+    margin-bottom: 1em;
+}
+fieldset .fieldValidation:last-child {
+    margin-bottom: 0;
 }
