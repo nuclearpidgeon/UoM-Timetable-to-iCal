@@ -33,6 +33,7 @@
                         Enter manually
                     </label>
                 </div>
+                
                 <fieldset id="dateFields" disabled="disabled">
                     <div class="field">
                         <label>Starting Date:</label>
@@ -40,7 +41,7 @@
                     </div>
                     <div class="fieldValidation">
                         <span>validated as:</span>
-                        <span id="startDateValidity"></span>
+                        <span id="startDateValidity" class="validator"></span>
                     </div>
                     <div class="field">
                         <label>Ending Date:</label>
@@ -48,13 +49,40 @@
                     </div>
                     <div class="fieldValidation">
                         <span>validated as:</span>
-                        <span id="endDateValidity"></span>
+                        <span id="endDateValidity" class="validator"></span>
                     </div>
                 </fieldset>
+
                 <p>
                     <input id ="weeklyYN" type="checkbox" name="weeklyYN" value="">
                     <label for="weeklyYN">Add week-long events for each week #</label>
                 </p>
+                
+                <h3>Break information</h3>
+                <p>
+                    <input id ="includeBreak" type="checkbox" name="includeBreak" value="">
+                    <label for="includeBreak">Exclude events within the following range:</label>
+                </p>
+
+                <fieldset id="breakDateFields" disabled="disabled">
+                    <div class="field">
+                        <label>From Date:</label>
+                        <input id="breakStartDate" type="text" value="28 July, 2014">
+                    </div>
+                    <div class="fieldValidation">
+                        <span>validated as:</span>
+                        <span id="breakStartDateValidity" class="validator"></span>
+                    </div>
+                    <div class="field">
+                        <label>To Date:</label>
+                        <input id="breakEndDate" type="text" value="26 October, 2014">
+                    </div>
+                    <div class="fieldValidation">
+                        <span>validated as:</span>
+                        <span id="breakEndDateValidity" class="validator"></span>
+                    </div>
+                </fieldset>
+
                 <input type="button" id="scriptStarter" value="Create Timetable"/>
             </form>
         </section>

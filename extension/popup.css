@@ -96,7 +96,7 @@ fieldset[disabled="disabled"] {
     cursor: no-drop;
     border-color: rgb(166, 166, 166);
     background-color: #eee;
-    color: grey;
+    color: #888;
 }
 fieldset[disabled="disabled"] * {
     cursor: not-allowed;
@@ -110,9 +110,15 @@ fieldset > * > * {
 fieldset > * > *:first-child {
     text-align: right;
 }
+.fieldset > * > .checkbox {
+    colspan: 2;
+}
 fieldset .fieldValidation {
     margin-bottom: 1em;
 }
 fieldset .fieldValidation:last-child {
     margin-bottom: 0;
+}
+fieldset .fieldValidation .validator {
+    margin-left: 1em;
 }

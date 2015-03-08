@@ -25,16 +25,16 @@ chrome.runtime.onMessage.addListener(
             // process classes
             $("#classCount span").text(request.classCount.toString());
             // done
-            sendResponse({farewell: "goodbye"});
+            sendResponse({farewell: "Popup successfully retrieved page data"});
         }
     }
 );
 
-var eventListener;
 
 document.addEventListener('DOMContentLoaded', function() {
     // add script trigger to page button
-    eventListener = document.getElementById("scriptStarter").addEventListener('click',startScript);
+    document.getElementById("scriptStarter").addEventListener('click',startScript);
+    
     // date source options logic
     $("#dateSourceFields").find('input[name="dateSource"]').on('change', function() {
         if ($('#dateSourceFields input[name="dateSource"]:checked').val() == "custom") {
@@ -49,21 +49,34 @@ document.addEventListener('DOMContentLoaded', function() {
         var sel = $(this);
         validateDateField(sel);
     })
+    $('#includeBreak').on('change', function() {
+        var breakDateFields = $('#breakDateFields');
+        if ($(this).is(":checked")) {
+            // enable break fields
+            breakDateFields.removeAttr("disabled");
+        } else {
+            // disable break fields
+            breakDateFields.attr("disabled", "disabled");
+        }
+    })
+    
     // attach principle dates URL (keeps URL definition in the one place, here)
     $('#principleDatesURL').attr('href', uniPDatesURL);
+    
     // run page script
     chrome.tabs.executeScript(null, {file: "libs/jquery-2.1.1.min.js"});
     chrome.tabs.executeScript(null, {file: "libs/ics.deps.min.js"});
     chrome.tabs.executeScript(null, {file: "libs/ics.js"});
     chrome.tabs.executeScript(null, {file: "contentscript.js"});
 
+    // fetch dates from UoM
     getSemesterDates();
 });
 
 
 var startScript = function() {
     console.log("Starting script...");
-    console.log(eventListener);
+    
     message = {
         greeting: "makeIcs", 
         weeklyEvents: document.getElementById("weeklyYN").checked,
