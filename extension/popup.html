@@ -33,6 +33,7 @@
                         Enter manually
                     </label>
                 </div>
+                
                 <fieldset id="dateFields" disabled="disabled">
                     <div class="field">
                         <label>Starting Date:</label>
@@ -40,7 +41,7 @@
                     </div>
                     <div class="fieldValidation">
                         <span>validated as:</span>
-                        <span id="startDateValidity"></span>
+                        <span id="startDateValidity" class="validator"></span>
                     </div>
                     <div class="field">
                         <label>Ending Date:</label>
@@ -48,13 +49,15 @@
                     </div>
                     <div class="fieldValidation">
                         <span>validated as:</span>
-                        <span id="endDateValidity"></span>
+                        <span id="endDateValidity" class="validator"></span>
                     </div>
                 </fieldset>
+
                 <p>
                     <input id ="weeklyYN" type="checkbox" name="weeklyYN" value="">
                     <label for="weeklyYN">Add week-long events for each week #</label>
                 </p>
+
                 <input type="button" id="scriptStarter" value="Create Timetable"/>
             </form>
         </section>
