@@ -3,94 +3,69 @@
 
 <head>
     <title>UoM Timetable to iCal</title>
-    <style type="text/css">
-    body {
-        min-width: 357px;
-        overflow-x: hidden;
-        font-family: 'Roboto','Helvetica','Arial', sans-serif;
-        font-weight: 300;
-        color: #111;
-        background-color: #ddd;
-        margin: 0 0 8px 0;
-    }
-    h1 {
-        font-size: 1.2em;
-        text-decoration: underline;
-    }
-    h2 {
-        font-size: 1em;
-        text-decoration: underline;
-    }
-    p, li {
-        font-size: 0.8em;
-    }
-    .banner h1 {
-        display:inline;
-        color:white;
-    }
-    .banner {
-        background-color: #036;
-        padding: 30px 0 5px 15px;
-    }
-    .main {
-        padding: 0 15px;
-    }
-    input[type="checkbox"] {
-        margin-left: 20px;
-    }
-    label#weeklyYN {
-        padding:0 4px;
-    }
-    input[type="button"] {
-        color: #fff;
-        background-color: #5cb85c;
-        border-color: #4cae4c;
-        border-radius: 4px;
-        padding: 10px;
-        margin: 20px auto;
-        display: block;
-        font-size: 1.2em;
-    }
-    </style>
-    <!--
-		- JavaScript and HTML must be in separate files: see our Content Security
-		- Policy documentation[1] for details and explanation.
-		-
-		- [1]: http://developer.chrome.com/extensions/contentSecurityPolicy.html
-	 -->
-	<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" src="popup.js"></script>
+    
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+    <link href='popup.css' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
-    <div class="banner">
+    <header>
         <h1>Unimelb Timetable .ics generator</h1>
-    </div>
-    <div class="main">
+    </header>
+    <main>
         <h2>Detected data</h2>
-        <ul>
-        	<li><span id="subjectCount">0</span> subjects detected</li>
-            <li><span id="classCount">0</span> classes detected</li>
-        </ul>
+        <section>
+            <h3 id="subjectCount"><span>0</span> subjects detected</h3>
+            <h3 id="classCount"><span>0</span> classes detected</h3>
+        </section>
         <h2>Options</h2>
-        <form action="">
-            <!-- 	<ul>
-    		<li><input type="radio" name="dateSource" value="online">Source from UoM page</li>
-    		<li><input type="radio" name="dateSource" value="custom">Enter manually</li>
-    	</ul> 
-            <p>Starting Date:
-                <input id="startDate" type="text" value="28 July, 2014">
-            </p>
-            <p>Ending Date:
-                <input id="endDate" type="text" value="26 October, 2014">
-            </p>-->
-            <p>
-            	<input id ="weeklyYN" type="checkbox" name="weeklyYN" value="">
-                <label for="weeklyYN">Add week-long events for each week #</label>
-            </p>
-            <input type="button" id="scriptStarter" value="Create Timetable"/>
-        </form>
-    </div>
+        <section>
+            <form action="">
+                <h3>Semester information</h3>
+                <div id="dateSourceFields" class="radio">
+                    <label>
+                        <input type="radio" name="dateSource" value="online" checked="checked">
+                        Source from <a id="principleDatesURL" href="#" target="_blank">UoM principle dates page</a>
+                    </label>
+                    <div id="semesterDatesFetchStatus"></div>
+                    <label>
+                        <input type="radio" name="dateSource" value="custom">
+                        Enter manually
+                    </label>
+                </div>
+                
+                <fieldset id="dateFields" disabled="disabled">
+                    <div class="field">
+                        <label>Starting Date:</label>
+                        <input id="startDate" type="text" value="28 July, 2014">
+                    </div>
+                    <div class="fieldValidation">
+                        <span>validated as:</span>
+                        <span id="startDateValidity" class="validator"></span>
+                    </div>
+                    <div class="field">
+                        <label>Ending Date:</label>
+                        <input id="endDate" type="text" value="26 October, 2014">
+                    </div>
+                    <div class="fieldValidation">
+                        <span>validated as:</span>
+                        <span id="endDateValidity" class="validator"></span>
+                    </div>
+                </fieldset>
+
+                <p>
+                    <input id ="weeklyYN" type="checkbox" name="weeklyYN" value="" checked="checked">
+                    <label for="weeklyYN">Add week-long events for each week #</label>
+                </p>
+
+                <input type="button" id="scriptStarter" value="Create Timetable"/>
+            </form>
+        </section>
+    </main>
+
+    <script type="text/javascript" src="libs/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="popup.js"></script>
+
 </body>
 
 </html>
