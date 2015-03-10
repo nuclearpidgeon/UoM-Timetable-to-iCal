@@ -24,8 +24,7 @@
         "declarativeContent", 
         "tabs", 
         "https://prod.ss.unimelb.edu.au/*",
-        "http://www.unimelb.edu.au/unisec/PDates/",
-        "file://*/UoM-Timetable-to-iCal/extension/test/*"
+        "http://www.unimelb.edu.au/unisec/PDates/"
     ],
 
     "web_accessible_resources": ["contentscript.js"]
