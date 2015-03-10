@@ -120,5 +120,9 @@ fieldset .fieldValidation:last-child {
 	margin-bottom: 0;
 }
 fieldset .fieldValidation .validator {
+	display: block;
 	margin-left: 1em;
+	padding: 1px;
+	border: 1px;
+	line-height: 2em;
 }
