@@ -167,14 +167,15 @@ var sanitizeDateRange = function(dateRange, year) {
 	}
 }
 
-var validateDateField = function(sel) {
+var validateDateField = function(dateSel, validSel) {
 	console.log('validating');
-	console.log(sel);
-	var date = sel.val();
-	if ( isValidDate ( new Date(date) ) ) {
-		sel.removeClass('error').addClass('success');
+	console.log(dateSel);
+	var date = new Date( dateSel.val() );
+	validSel.text(date.toDateString())
+	if ( isValidDate ( date ) ) {
+		dateSel.removeClass('error').addClass('success');
 	} else {
-		sel.removeClass('success').addClass('error');
+		dateSel.removeClass('success').addClass('error');
 	}
 }
 
@@ -187,11 +188,13 @@ var updateFetchedDate = function() {
 	var dates = $('#semesterDates :selected').val().split(',');
 	var startDate = dates[0];
 	var startDateSel = $('#startDate');
+	var startDateValidSel = $('#startDateValidity');
 	var endDate = dates[1];
 	var endDateSel = $('#endDate');
+	var endDateValidSel = $('#endDateValidity');
 
 	startDateSel.val(startDate);
-	validateDateField(startDateSel);
+	validateDateField(startDateSel, startDateValidSel);
 	endDateSel.val(endDate);
-	validateDateField(endDateSel);
+	validateDateField(endDateSel, endDateValidSel);
 }
