@@ -138,17 +138,23 @@ var makeIcs = function(startDate, endDate, weekEvents) {
 	cal.download("yourCal");
 };
 
+
 // attach listener from popup
-chrome.runtime.onMessage.addListener(
-	function(request, sender, sendResponse) {
-		if (request.greeting == "makeIcs") {
-			makeIcs(
-				request.startDate,
-				request.endDate,
-				request.breakStartDate,
-				request.weeklyEvents
-			);
-			sendResponse({farewell: "executed makeIcs()"});
+var attached;
+
+if ( typeof(attached) === 'undefined' ) {
+	attached = true;
+	chrome.runtime.onMessage.addListener(
+		function(request, sender, sendResponse) {
+			console.log("got message from popup");
+			if (request.greeting == "makeIcs") {
+				makeIcs(
+					request.startDate,
+					request.endDate,
+					request.weeklyEvents
+				);
+				sendResponse({farewell: "executed makeIcs()"});
+			}
 		}
-	}
-);
+	);
+}

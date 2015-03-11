@@ -33,7 +33,7 @@ chrome.runtime.onMessage.addListener(
 
 document.addEventListener('DOMContentLoaded', function() {
 	// add script trigger to page button
-	document.getElementById("scriptStarter").addEventListener('click',startScript);
+	$("#scriptStarter").off().on('click',startScript);
 	
 	// date source options logic
 	$("#dateSourceFields").find('input[name="dateSource"]').on('change', function() {
