@@ -10,7 +10,10 @@
     },
 
     "page_action": {
-        "default_icon": "icon-128.png",
+        "default_icon": {
+            "19": "icon-19.png",
+            "38": "icon-76.png" // double size for retina
+        },
         "default_title": "UoM Timetable detected",
         "default_popup": "popup.html"
     },
