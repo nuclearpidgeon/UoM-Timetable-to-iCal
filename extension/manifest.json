@@ -12,7 +12,7 @@
     "page_action": {
         "default_icon": {
             "19": "icon-19.png",
-            "38": "icon-76.png" // double size for retina
+            "38": "icon-76.png"
         },
         "default_title": "UoM Timetable detected",
         "default_popup": "popup.html"
