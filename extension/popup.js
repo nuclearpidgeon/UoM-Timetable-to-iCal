@@ -1,13 +1,19 @@
-// declare variables
+// constants
+//==========
+
+// URL to fetch Semester dates from
 var uniPDatesURL = "http://www.unimelb.edu.au/unisec/PDates/";
+
+// plugin setup
+//=============
 
 // add event listener for incoming messages from the contentscript
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.greeting == "pageData") {
-			// content script has sent through class and subject info
-			// process subjects
+			// content script has sent through class and subject info.
 			var subjectCountElem = $('#subjectCount');
+			// process subjects
 			if (request.subjectMap) {
 				var subjectListString = "<ul>";
 				// iterate over subjects
@@ -30,14 +36,17 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
+// page setup
+//===========
 
 document.addEventListener('DOMContentLoaded', function() {
 	// add script trigger to page button
-	$("#scriptStarter").off().on('click',startScript);
+	$("#timetableScriptTrigger").off().on('click',startScript);
 	
 	// date source options logic
 	$("#dateSourceFields").find('input[name="dateSource"]').on('change', function() {
-		if ($('#dateSourceFields input[name="dateSource"]:checked').val() == "custom") {
+		var dateSource = $('#dateSourceFields input[name="dateSource"]:checked').val();
+		if (dateSource == "custom") {
 			$('#semesterDates').attr("disabled", "disabled");
 			$('#dateFields').removeAttr("disabled");
 		} else {
@@ -63,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	getSemesterDates();
 });
 
-
+// function for communicating with contentscript.js and triggering calendar file creation
 var startScript = function() {
 	console.log("Starting script...");
 	
@@ -72,8 +81,8 @@ var startScript = function() {
 		weeklyEvents: document.getElementById("weeklyYN").checked,
 		startDate: document.getElementById("startDate").value,
 		endDate: document.getElementById("endDate").value
+	};
 
-	}
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
 			console.log(response.farewell);
@@ -81,6 +90,7 @@ var startScript = function() {
 	});
 };
 
+// function for fetching dates from the UoM principle dates calendar
 var getSemesterDates = function() {
 	var pageStatus = document.getElementById("semesterDatesFetchStatus");
 	var results = $('<div id=results></div>');
@@ -113,6 +123,7 @@ var getSemesterDates = function() {
 
 				datesTable.find('td:contains("Semester")').parent().each(getData);
 				datesTable.find('td:contains("Term")').parent().each(getData);
+
 				var resultString = "";
 				if (dates.length > 1) {
 					resultString = '<p class="success">Successfully retrieved '+dates.length.toString()+' date sets from UoM</p>';
@@ -144,6 +155,7 @@ var getSemesterDates = function() {
 	});
 }
 
+// function for splitting fuzzy date ranges from the UoM page into seperate, distinct dates
 var sanitizeDateRange = function(dateRange, year) {
 	var sanitize = function(string, delimiter) {
 		return string.split(delimiter).map(function(splitStr){return splitStr.trim()+" "+year}).join(',');
@@ -167,6 +179,7 @@ var sanitizeDateRange = function(dateRange, year) {
 	}
 }
 
+// event handler for validating manually entered dates
 var validateDateField = function(dateSel, validSel) {
 	console.log('validating');
 	console.log(dateSel);
