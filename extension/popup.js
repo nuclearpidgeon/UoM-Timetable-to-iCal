@@ -54,10 +54,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			$('#semesterDates').removeAttr("disabled");
 		}
 	});
-	$('#dateFields').find('input').on('change', function() {
+	$('#startDate').on('change', function() {
 		var sel = $(this);
-		validateDateField(sel);
-	})
+		validateDateField(sel, $('#startDateValidity'));
+	});
+	$('#endDate').on('change', function() {
+		var sel = $(this);
+		validateDateField(sel, $('#endDateValidity'));
+	});
 	
 	// attach principle dates URL (keeps URL definition in the one place, here)
 	$('#principleDatesURL').attr('href', uniPDatesURL);
