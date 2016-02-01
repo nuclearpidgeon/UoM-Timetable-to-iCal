@@ -107,6 +107,7 @@ var getSemesterDates = function() {
 
 				// try and find semester dates for each year
 				var dates = [];
+				var matchedSearchNodes = [];
 				
 				years.each(function(index, element) {
 					// iterating over each potential calendar year
@@ -144,6 +145,22 @@ var getSemesterDates = function() {
 					}
 					if (foundContentNode == false) {
 						console.log("Error trying to find table of dates for year " + year + " - could not find #content node");
+						return;
+					}
+
+					// test to see if this node has already been matched to avoid duplicates.
+					//
+					// this is necessary as the :contains selector used to search for years
+					// will match nested elements - e.g.
+					//     $(':contains("sometext")')
+					// called on
+					//     <p><span>sometext</span></p>
+					// will match both <p> and <span>
+					//
+					if (matchedSearchNodes.indexOf(current) === -1) {
+						matchedSearchNodes.push(current);
+					} else {
+						// already searched this node!
 						return;
 					}
 
