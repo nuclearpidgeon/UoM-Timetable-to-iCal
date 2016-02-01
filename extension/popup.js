@@ -1,13 +1,19 @@
-// declare variables
-var uniPDatesURL = "http://www.unimelb.edu.au/unisec/PDates/";
+// constants
+//==========
+
+// URL to fetch Semester dates from
+var uniPDatesURL = "http://www.unimelb.edu.au/unisec/PDates/acadcale.html";
+
+// plugin setup
+//=============
 
 // add event listener for incoming messages from the contentscript
 chrome.runtime.onMessage.addListener(
 	function(request, sender, sendResponse) {
 		if (request.greeting == "pageData") {
-			// content script has sent through class and subject info
-			// process subjects
+			// content script has sent through class and subject info.
 			var subjectCountElem = $('#subjectCount');
+			// process subjects
 			if (request.subjectMap) {
 				var subjectListString = "<ul>";
 				// iterate over subjects
@@ -30,14 +36,17 @@ chrome.runtime.onMessage.addListener(
 	}
 );
 
+// page setup
+//===========
 
 document.addEventListener('DOMContentLoaded', function() {
 	// add script trigger to page button
-	$("#scriptStarter").off().on('click',startScript);
+	$("#timetableScriptTrigger").off().on('click',startScript);
 	
 	// date source options logic
 	$("#dateSourceFields").find('input[name="dateSource"]').on('change', function() {
-		if ($('#dateSourceFields input[name="dateSource"]:checked').val() == "custom") {
+		var dateSource = $('#dateSourceFields input[name="dateSource"]:checked').val();
+		if (dateSource == "custom") {
 			$('#semesterDates').attr("disabled", "disabled");
 			$('#dateFields').removeAttr("disabled");
 		} else {
@@ -45,10 +54,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			$('#semesterDates').removeAttr("disabled");
 		}
 	});
-	$('#dateFields').find('input').on('change', function() {
+	$('#startDate').on('change', function() {
 		var sel = $(this);
-		validateDateField(sel);
-	})
+		validateDateField(sel, $('#startDateValidity'));
+	});
+	$('#endDate').on('change', function() {
+		var sel = $(this);
+		validateDateField(sel, $('#endDateValidity'));
+	});
 	
 	// attach principle dates URL (keeps URL definition in the one place, here)
 	$('#principleDatesURL').attr('href', uniPDatesURL);
@@ -63,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	getSemesterDates();
 });
 
-
+// function for communicating with contentscript.js and triggering calendar file creation
 var startScript = function() {
 	console.log("Starting script...");
 	
@@ -72,8 +85,8 @@ var startScript = function() {
 		weeklyEvents: document.getElementById("weeklyYN").checked,
 		startDate: document.getElementById("startDate").value,
 		endDate: document.getElementById("endDate").value
+	};
 
-	}
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
 			console.log(response.farewell);
@@ -81,46 +94,123 @@ var startScript = function() {
 	});
 };
 
+// function for fetching dates from the UoM principle dates calendar
 var getSemesterDates = function() {
 	var pageStatus = document.getElementById("semesterDatesFetchStatus");
 	var results = $('<div id=results></div>');
 
-	pageStatus.innerHTML = "<p class=\"fetching\">Attempting to fetch semester dates...</p>";
+	pageStatus.innerHTML = '<p class="fetching">Attempting to fetch semester dates...</p>';
 	results.load(
 		uniPDatesURL + " #content",
 		"",
 		function(responseText, textStatus, jqXHR) {
-			if ( textStatus == "notmodified" || textStatus == "success") {
+			if (textStatus == "notmodified" || textStatus == "success") {
 				// whoohoo we got a page
-				// try and find year
-				var year = results.find('h2:contains("Principal Dates")').text().match('[0-9]{4}');
-				if (typeof(year) == "object") {
-					// assume regex matched
-					year = year[0];
-				}
-				else {
-					year = new Date().getFullYear().toString()
-				}
-				// try and find semester dates
+				// search for calendar years
+				var years = results.find('#content').find(':contains("Academic Calendar for")');
+
+				// try and find semester dates for each year
 				var dates = [];
-				var datesTable = results.find('table')
+				var matchedSearchNodes = [];
+				
+				years.each(function(index, element) {
+					// iterating over each potential calendar year
+					var yearElem = $(element);
+					// try and match a year #
+					var yearText = yearElem.text();
+					var year = yearText.match(/[0-9]{4}/);
+					if (year !== null) {
+						// regex matched
+						year = year[0];
+						console.log("Found description for year " + year + " in loop iteration #" + index.toString());
+					}
+					else {
+						// year = new Date().getFullYear().toString()
+						console.log("Could not match a year # out of Academic Calendar string: " + yearText);
+						return;
+					}
 
-				var getData = function(i, e) {
-					var dateRange = sanitizeDateRange($(e).find('td')[0].innerText, year);
-					var semester = $(e).find('td')[1].innerText;
-					dates.push({"semester":semester,"dateRange":dateRange});
-				};
+					// search the DOM ancestry of the year match element, to find the
+					// parent element closest to the root #content node. (The dates are
+					// stored in a <table> element that sits at this DOM tree level)
+					var current = element;
+					var parent = element.parentElement;
+					var foundContentNode = false;
+					while(parent != null) {
+						if (parent.id == "content") {
+							foundContentNode = true;
+							break;
+						}
+						else {
+							// keep looking
+							current = parent;
+							parent = parent.parentElement;
+						}
+					}
+					if (foundContentNode == false) {
+						console.log("Error trying to find table of dates for year " + year + " - could not find #content node");
+						return;
+					}
 
-				datesTable.find('td:contains("Semester")').parent().each(getData);
-				datesTable.find('td:contains("Term")').parent().each(getData);
+					// test to see if this node has already been matched to avoid duplicates.
+					//
+					// this is necessary as the :contains selector used to search for years
+					// will match nested elements - e.g.
+					//     $(':contains("sometext")')
+					// called on
+					//     <p><span>sometext</span></p>
+					// will match both <p> and <span>
+					//
+					if (matchedSearchNodes.indexOf(current) === -1) {
+						matchedSearchNodes.push(current);
+					} else {
+						// already searched this node!
+						return;
+					}
+
+					// look for a <table> sibling element that comes after the matched node
+					var sibling = current.nextSibling;
+					var foundTableNode = false;
+					while(sibling != null) {
+						if (sibling.nodeName == "TABLE") {
+							foundTableNode = true;
+							break;
+						}
+						else {
+							// keep looking...
+							sibling = sibling.nextSibling;
+						}
+					}
+					if (foundTableNode == false) {
+						console.log("Error trying to find table of dates for year " + year + " - could not find <table> element");
+						return;
+					}
+
+					// getData out of the table
+					var datesTable = $(sibling);
+					var getData = function(i, e) {
+						var dateRange = sanitizeDateRange($(e).find('td')[0].innerText, year);
+						var semesterDescription = $(e).find('td')[1].innerText;
+						dates.push({
+							"year": year,
+							"semester": semesterDescription,
+							"dateRange": dateRange
+						});
+					};
+					datesTable.find('td:contains("Semester")').parent().each(getData);
+					datesTable.find('td:contains("Term")').parent().each(getData);
+
+				});
+
 				var resultString = "";
 				if (dates.length > 1) {
 					resultString = '<p class="success">Successfully retrieved '+dates.length.toString()+' date sets from UoM</p>';
 					resultString +='<select id="semesterDates">';
 					for (var i = 0; i < dates.length; i++ ) {
-						console.log("Found semester: "+JSON.stringify(dates[i]));
-						resultString += "<option value=\""+dates[i]["dateRange"]+"\" >";
-						resultString += dates[i]["semester"];
+						var date = dates[i];
+						console.log("Found semester: "+JSON.stringify(date));
+						resultString += "<option value=\""+date["dateRange"]+"\" >";
+						resultString += date["year"] + ": " + date["semester"];
 						resultString += "</option>";
 					};
 					//console.log(dates);
@@ -144,6 +234,7 @@ var getSemesterDates = function() {
 	});
 }
 
+// function for splitting fuzzy date ranges from the UoM page into seperate, distinct dates
 var sanitizeDateRange = function(dateRange, year) {
 	var sanitize = function(string, delimiter) {
 		return string.split(delimiter).map(function(splitStr){return splitStr.trim()+" "+year}).join(',');
@@ -167,9 +258,12 @@ var sanitizeDateRange = function(dateRange, year) {
 	}
 }
 
+// event handler for validating date strings by parsing them with Date
+//
+// dateSel: jQuery selector of field to get date string from
+// validSel: jQuery selector of field to write validated date to
+//
 var validateDateField = function(dateSel, validSel) {
-	console.log('validating');
-	console.log(dateSel);
 	var date = new Date( dateSel.val() );
 	validSel.text(date.toDateString())
 	if ( isValidDate ( date ) ) {
