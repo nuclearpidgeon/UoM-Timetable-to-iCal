@@ -254,10 +254,12 @@ var sanitizeDateRange = function(dateRange, year) {
 	}
 }
 
-// event handler for validating manually entered dates
+// event handler for validating date strings by parsing them with Date
+//
+// dateSel: jQuery selector of field to get date string from
+// validSel: jQuery selector of field to write validated date to
+//
 var validateDateField = function(dateSel, validSel) {
-	console.log('validating');
-	console.log(dateSel);
 	var date = new Date( dateSel.val() );
 	validSel.text(date.toDateString())
 	if ( isValidDate ( date ) ) {
