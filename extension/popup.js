@@ -2,7 +2,7 @@
 //==========
 
 // URL to fetch Semester dates from
-var uniPDatesURL = "http://www.unimelb.edu.au/unisec/PDates/acadcale.html";
+var uniPDatesURL = "http://www.unimelb.edu.au/dates";
 
 // plugin setup
 //=============
@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener(
 				subjectCountElem.after(subjectListString);
 			}
 			subjectCountElem.find("span").text(request.subjectCount.toString());
-			
+
 			// process classes
 			$("#classCount span").text(request.classCount.toString());
 			// done
@@ -101,106 +101,68 @@ var getSemesterDates = function() {
 
 	pageStatus.innerHTML = '<p class="fetching">Attempting to fetch semester dates...</p>';
 	results.load(
-		uniPDatesURL + " #content",
+		uniPDatesURL + " #main-content",
 		"",
 		function(responseText, textStatus, jqXHR) {
 			if (textStatus == "notmodified" || textStatus == "success") {
 				// whoohoo we got a page
-				// search for calendar years
-				var years = results.find('#content').find(':contains("Academic Calendar for")');
 
-				// try and find semester dates for each year
+				// As of July 2016:
+				//
+				// * The dates page has changed to 'unimelb.edu.au/dates'
+				// * This page returns the full set of dates for the CURRENT YEAR
+				// * Sets of dates for future/past years are accessible through
+				//   navigation links at the top of the page
+				// * Dates for each year are stored in a single table on each of
+				//   these pages.
+
+				var year;
+
+				var currentYearOnPage = results.find('ul.search-pagination.center li.act');
+				if (currentYearOnPage.length > 0) {
+					// use year found on page
+
+					year = currentYearOnPage[0].innerText.trim();
+				}
+				else {
+					// fall back on current year from Javascipt
+
+					var rightAboutNow = new Date();
+					// the funk soul brother
+					checkItOutNow = rightAboutNow.getFullYear();
+					// the funk soul brother
+					year = checkItOutNow;
+				}
+				var year = "2016";
+
+				// Setup array for holding any found dates
 				var dates = [];
-				var matchedSearchNodes = [];
-				
-				years.each(function(index, element) {
-					// iterating over each potential calendar year
-					var yearElem = $(element);
-					// try and match a year #
-					var yearText = yearElem.text();
-					var year = yearText.match(/[0-9]{4}/);
-					if (year !== null) {
-						// regex matched
-						year = year[0];
-						console.log("Found description for year " + year + " in loop iteration #" + index.toString());
-					}
-					else {
-						// year = new Date().getFullYear().toString()
-						console.log("Could not match a year # out of Academic Calendar string: " + yearText);
-						return;
-					}
 
-					// search the DOM ancestry of the year match element, to find the
-					// parent element closest to the root #content node. (The dates are
-					// stored in a <table> element that sits at this DOM tree level)
-					var current = element;
-					var parent = element.parentElement;
-					var foundContentNode = false;
-					while(parent != null) {
-						if (parent.id == "content") {
-							foundContentNode = true;
-							break;
-						}
-						else {
-							// keep looking
-							current = parent;
-							parent = parent.parentElement;
-						}
-					}
-					if (foundContentNode == false) {
-						console.log("Error trying to find table of dates for year " + year + " - could not find #content node");
-						return;
-					}
+				// Grab the table of dates for the current year
+				var datesTable = results.find('table');
 
-					// test to see if this node has already been matched to avoid duplicates.
-					//
-					// this is necessary as the :contains selector used to search for years
-					// will match nested elements - e.g.
-					//     $(':contains("sometext")')
-					// called on
-					//     <p><span>sometext</span></p>
-					// will match both <p> and <span>
-					//
-					if (matchedSearchNodes.indexOf(current) === -1) {
-						matchedSearchNodes.push(current);
-					} else {
-						// already searched this node!
-						return;
-					}
+				// Setup a function for trying to find dates in a given row
+				var getData = function(i, rowElem) {
+					var $rowElem = $(rowElem);
 
-					// look for a <table> sibling element that comes after the matched node
-					var sibling = current.nextSibling;
-					var foundTableNode = false;
-					while(sibling != null) {
-						if (sibling.nodeName == "TABLE") {
-							foundTableNode = true;
-							break;
-						}
-						else {
-							// keep looking...
-							sibling = sibling.nextSibling;
-						}
-					}
-					if (foundTableNode == false) {
-						console.log("Error trying to find table of dates for year " + year + " - could not find <table> element");
-						return;
-					}
+					var dateRangeText = $rowElem.find('td')[0].innerText;
+					var sanitizedDateRange = sanitizeDateRangeText(dateRangeText, year);
+					var semesterDescription = $rowElem.find('td')[1].innerText.trim();
 
-					// getData out of the table
-					var datesTable = $(sibling);
-					var getData = function(i, e) {
-						var dateRange = sanitizeDateRange($(e).find('td')[0].innerText, year);
-						var semesterDescription = $(e).find('td')[1].innerText;
-						dates.push({
-							"year": year,
-							"semester": semesterDescription,
-							"dateRange": dateRange
-						});
-					};
-					datesTable.find('td:contains("Semester")').parent().each(getData);
-					datesTable.find('td:contains("Term")').parent().each(getData);
+					dates.push({
+						"year": year,
+						"semester": semesterDescription,
+						"dateRange": sanitizedDateRange
+					});
+				};
 
-				});
+				// Apply this function to any row that has a td cell matching
+				// the keywords 'Semester' or 'Term'
+
+				datesTable.find('td:contains("Semester")').parent().each(getData);
+				datesTable.find('td:contains("Term")').parent().each(getData);
+
+				// Report information about fetched data to the user
 
 				var resultString = "";
 				if (dates.length > 1) {
@@ -224,6 +186,7 @@ var getSemesterDates = function() {
 				} else {
 					// must not have found any dates
 					pageStatus.innerHTML = '<p class="notfound">Could not find any dates on the UoM principle dates pages. Please enter dates manually below</p>';
+					console.log("Could not find any dates on "+uniPDatesURL);
 				}
 			} else {
 				console.log("Error fetching dates from "+uniPDatesURL);
@@ -234,11 +197,43 @@ var getSemesterDates = function() {
 	});
 }
 
-// function for splitting fuzzy date ranges from the UoM page into seperate, distinct dates
-var sanitizeDateRange = function(dateRange, year) {
+// sanitizeDateRangeText()
+//
+// function for splitting fuzzy date ranges from the UoM page into seperate,
+// distinct dates
+//
+// Returns:
+//     a string with two sanitized dates that are comma-separated
+//
+var sanitizeDateRangeText = function(dateRange, year) {
+	// Trim a bunch of whitespace first.
+	//
+	// 'dateRange' is usually the result of calling innerText on a HTML node,
+	// which may have a bunch of structure under it or arbitrary whitespace
+	// from pretty-printed/indented HTML tags.
+	//
+	// Because of this, whitespace and newlines are aggressively trimmed, to
+	// prevent them from causing issues when the individual dates are later
+	// parsed
+
+	// Trim trailing whitespace
+	dateRange = dateRange.trim()
+	// Replace any newlines with spaces
+	dateRange = dateRange.replace(/\r?\n|\r/g, " ")
+	// Replace any groups of whitespace with a single space
+	dateRange = dateRange.replace(/\s+/g, " ")
+
+	// Setup sanitizer for cleaning up the individual dates that are in
+	// a given date range
 	var sanitize = function(string, delimiter) {
-		return string.split(delimiter).map(function(splitStr){return splitStr.trim()+" "+year}).join(',');
+		return string.split(delimiter)
+			.map(function(splitStr) {
+				// Trim whitespace and also add the year to the end of the
+				// string, as all the dates on the UoM page are scoped by year
+				return splitStr.trim() + " " + year
+			}).join(',');
 	}
+
 	if (dateRange.indexOf(' to ') > -1) {
 		// 'to' is the delimiter, swap to comma
 		return sanitize(dateRange,' to ');
