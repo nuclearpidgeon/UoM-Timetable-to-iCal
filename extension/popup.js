@@ -121,8 +121,8 @@ var getSemesterDates = function() {
 				var currentYearOnPage = results.find('ul.search-pagination.center li.act');
 				if (currentYearOnPage.length > 0) {
 					// use year found on page
-
 					year = currentYearOnPage[0].innerText.trim();
+					console.log("Year detection: - Found year '" + year + "' on UoM dates page");
 				}
 				else {
 					// fall back on current year from Javascipt
@@ -132,6 +132,8 @@ var getSemesterDates = function() {
 					checkItOutNow = rightAboutNow.getFullYear();
 					// the funk soul brother
 					year = checkItOutNow;
+
+					console.log("Year detection: - Falling back on current time's year (" + year + ")");
 				}
 
 				// Setup array for holding any found dates
