@@ -133,7 +133,6 @@ var getSemesterDates = function() {
 					// the funk soul brother
 					year = checkItOutNow;
 				}
-				var year = "2016";
 
 				// Setup array for holding any found dates
 				var dates = [];
