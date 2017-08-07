@@ -118,22 +118,30 @@ var getSemesterDates = function() {
 
 				var year;
 
-				var currentYearOnPage = results.find('ul.search-pagination.center li.act');
-				if (currentYearOnPage.length > 0) {
-					// use year found on page
-					year = currentYearOnPage[0].innerText.trim();
-					console.log("Year detection: - Found year '" + year + "' on UoM dates page");
-				}
-				else {
+				var useFallbackYear = function(reason) {
 					// fall back on current year from Javascipt
-
 					var rightAboutNow = new Date();
 					// the funk soul brother
 					checkItOutNow = rightAboutNow.getFullYear();
 					// the funk soul brother
 					year = checkItOutNow;
+					console.log("Year detection: " + reason + " - Falling back on current time's year (" + year + ")");
+				}
 
-					console.log("Year detection: - Falling back on current time's year (" + year + ")");
+				var $currentYearOnPage = results.find('ul.search-pagination.center li.act');
+				if ($currentYearOnPage.length > 0) {
+					// use year found on page
+					var currentYearOnPage = $currentYearOnPage[0].innerText.trim();
+					if (currentYearOnPage.length > 0) {
+						year = currentYearOnPage;
+						console.log("Year detection: - Found year '" + year + "' on UoM dates page");
+					}
+					else {
+						useFallbackYear('Found blank/empty year on UoM dates page');
+					}
+				}
+				else {
+					useFallbackYear("Couldn't find year on UoM dats page");
 				}
 
 				// Setup array for holding any found dates
