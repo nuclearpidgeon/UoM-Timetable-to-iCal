@@ -107,9 +107,9 @@ var getSemesterDates = function() {
 			if (textStatus == "notmodified" || textStatus == "success") {
 				// whoohoo we got a page
 
-				// As of July 2016:
+				// As of August 2017:
 				//
-				// * The dates page has changed to 'unimelb.edu.au/dates'
+				// * The dates page is now 'unimelb.edu.au/dates'
 				// * This page returns the full set of dates for the CURRENT YEAR
 				// * Sets of dates for future/past years are accessible through
 				//   navigation links at the top of the page
