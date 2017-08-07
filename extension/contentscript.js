@@ -35,7 +35,7 @@ var makeIcs = function(startDate, endDate, weekEvents) {
 	// set up semester boundaries
 	var startingDate = new Date(startDate);
 	var endingDate = new Date(endDate);
-	var breakStartDate = new Date("26 September, 2016");
+	var breakStartDate = new Date("25 September, 2017");
 
 	var dateFormat = function(rawtime, day) {
 		// date fields on the timetable page don't match dateSting format for JavaScript

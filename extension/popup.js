@@ -107,9 +107,9 @@ var getSemesterDates = function() {
 			if (textStatus == "notmodified" || textStatus == "success") {
 				// whoohoo we got a page
 
-				// As of July 2016:
+				// As of August 2017:
 				//
-				// * The dates page has changed to 'unimelb.edu.au/dates'
+				// * The dates page is now 'unimelb.edu.au/dates'
 				// * This page returns the full set of dates for the CURRENT YEAR
 				// * Sets of dates for future/past years are accessible through
 				//   navigation links at the top of the page
@@ -118,22 +118,31 @@ var getSemesterDates = function() {
 
 				var year;
 
-				var currentYearOnPage = results.find('ul.search-pagination.center li.act');
-				if (currentYearOnPage.length > 0) {
-					// use year found on page
-
-					year = currentYearOnPage[0].innerText.trim();
-				}
-				else {
+				var useFallbackYear = function(reason) {
 					// fall back on current year from Javascipt
-
 					var rightAboutNow = new Date();
 					// the funk soul brother
 					checkItOutNow = rightAboutNow.getFullYear();
 					// the funk soul brother
 					year = checkItOutNow;
+					console.log("Year detection: " + reason + " - Falling back on current time's year (" + year + ")");
 				}
-				var year = "2016";
+
+				var $currentYearOnPage = results.find('ul.search-pagination.center li.act');
+				if ($currentYearOnPage.length > 0) {
+					// use year found on page
+					var currentYearOnPage = $currentYearOnPage[0].innerText.trim();
+					if (currentYearOnPage.length > 0) {
+						year = currentYearOnPage;
+						console.log("Year detection: - Found year '" + year + "' on UoM dates page");
+					}
+					else {
+						useFallbackYear('Found blank/empty year on UoM dates page');
+					}
+				}
+				else {
+					useFallbackYear("Couldn't find year on UoM dats page");
+				}
 
 				// Setup array for holding any found dates
 				var dates = [];
