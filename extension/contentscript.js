@@ -31,7 +31,7 @@ chrome.runtime.sendMessage(message, function(response) {
 var makeIcs = function(startDate, endDate, weekEvents) {
 	// parameter defaults
 	if (weekEvents !== true) weekEvents = false;
-	
+
 	// set up semester boundaries
 	var startingDate = new Date(startDate);
 	var endingDate = new Date(endDate);
@@ -52,7 +52,7 @@ var makeIcs = function(startDate, endDate, weekEvents) {
 	// If there is a Sunday in the timetable, it appears first.
 	// It's easier to assume Monday is the first day of the week
 	// so this lookup table is used to deal with the day order.
-	
+
 	var daysIndex = {
 		"Monday": 0,
 		"Tuesday": 1,
@@ -83,7 +83,7 @@ var makeIcs = function(startDate, endDate, weekEvents) {
 
 		// set up variable for the mid-semester break offset (used for exlusion)
 		var exludeDay = new Date(breakStartDate.getTime() + dayIndex*(24 * 60 * 60 * 1000));
-		
+
 		$(classSelector, this).each(function(index){
 			// iterating over each subject in a weekday
 			// collect data
@@ -129,11 +129,11 @@ var makeIcs = function(startDate, endDate, weekEvents) {
 
 			var weekEndDate = new Date(weekStartDate.toDateString());
 			weekEndDate.setDate(weekStartDate.getDate()+5);
-			
+
 			cal.addEvent(eventName, eventDescription, "", weekStartDate, weekEndDate);
 		}
 	}
-	
+
 	// download ics
 	cal.download("yourCal");
 };
