@@ -35,6 +35,15 @@ var makeIcs = function(startDate, endDate, weekEvents) {
 	// set up semester boundaries
 	var startingDate = new Date(startDate);
 	var endingDate = new Date(endDate);
+
+	// Note: Semester break is currently handled quite simply and rigidly.
+	//
+	// Rather than properly exluding all events within the whole break window,
+	// the code relies on being passed the Monday date for a single Monday ->
+	// Sunday week that will be excluded. This can end up missing a day or two
+	// (e.g. the Semester 1 break starts on Good Friday, but then going
+	// through till the Sunday the week after that), but is 'good enough' for
+	// now until the break handling is refactored and improved.
 	var breakStartDate = new Date("25 September, 2017");
 
 	var dateFormat = function(rawtime, day) {
