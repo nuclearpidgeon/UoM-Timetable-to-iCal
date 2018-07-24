@@ -148,7 +148,7 @@ var getSemesterDates = function() {
 				}
 
 				// Setup array for holding any found dates
-				var dates = [];
+				var foundSemesters = [];
 
 				// Grab the table of dates for the current year
 				var datesTable = results.find('table');
@@ -161,7 +161,7 @@ var getSemesterDates = function() {
 					var sanitizedDateRange = sanitizeDateRangeText(dateRangeText, year);
 					var semesterDescription = $rowElem.find('td')[1].innerText.trim();
 
-					dates.push({
+					foundSemesters.push({
 						"year": year,
 						"semester": semesterDescription,
 						"dateRange": sanitizedDateRange
@@ -177,11 +177,11 @@ var getSemesterDates = function() {
 				// Report information about fetched data to the user
 
 				var resultString = "";
-				if (dates.length > 1) {
-					resultString = '<p class="success">Successfully retrieved '+dates.length.toString()+' date sets from UoM</p>';
+				if (foundSemesters.length > 1) {
+					resultString = '<p class="success">Successfully retrieved '+foundSemesters.length.toString()+' date sets from UoM</p>';
 					resultString +='<select id="semesterDates">';
-					for (var i = 0; i < dates.length; i++ ) {
-						var date = dates[i];
+					for (var i = 0; i < foundSemesters.length; i++ ) {
+						var date = foundSemesters[i];
 						console.log("Found semester: "+JSON.stringify(date));
 						resultString += "<option value=\""+date["dateRange"]+"\" >";
 						resultString += date["year"] + ": " + date["semester"];
