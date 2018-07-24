@@ -100,6 +100,9 @@ var getSemesterDates = function() {
 	var results = $('<div id=results></div>');
 
 	pageStatus.innerHTML = '<p class="fetching">Attempting to fetch semester dates...</p>';
+	// use jquery's .load() to get the HTML from the unimelb principal dates
+	// page parsed and inserted into results element, so that it can be locally
+	// searched with jQuery
 	results.load(
 		uniPDatesURL + " #main-content",
 		"",
