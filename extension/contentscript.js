@@ -47,7 +47,9 @@ var makeIcs = function(startDate, endDate, weekEvents) {
 	//
 	// 2018 sem1 notes: the break is actually Friday 30 March to Sunday 8 April,
 	// but 2 April is used for reasons listed above.
-	var breakStartDate = new Date("24 September, 2018");
+	// var breakStartDate = new Date("2 April, 2018");
+	// var breakStartDate = new Date("24 September, 2018");
+	var breakStartDate = new Date("30 September, 2019");
 
 	var dateFormat = function(rawtime, day) {
 		// date fields on the timetable page don't match dateSting format for JavaScript
