@@ -2,7 +2,7 @@
     "manifest_version": 2,
 
     "name": "Unimelb Timetable to iCal",
-    "version": "1.1.5",
+    "version": "1.2.0",
     "description": "Converts the Unimelb timetable page into an iCal file",
 
     "icons": {
