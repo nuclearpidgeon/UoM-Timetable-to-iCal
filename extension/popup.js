@@ -100,6 +100,9 @@ var getSemesterDates = function() {
 	var results = $('<div id=results></div>');
 
 	pageStatus.innerHTML = '<p class="fetching">Attempting to fetch semester dates...</p>';
+	// use jquery's .load() to get the HTML from the unimelb principal dates
+	// page parsed and inserted into results element, so that it can be locally
+	// searched with jQuery
 	results.load(
 		uniPDatesURL + " #main-content",
 		"",
@@ -145,7 +148,7 @@ var getSemesterDates = function() {
 				}
 
 				// Setup array for holding any found dates
-				var dates = [];
+				var foundSemesters = [];
 
 				// Grab the table of dates for the current year
 				var datesTable = results.find('table');
@@ -158,7 +161,7 @@ var getSemesterDates = function() {
 					var sanitizedDateRange = sanitizeDateRangeText(dateRangeText, year);
 					var semesterDescription = $rowElem.find('td')[1].innerText.trim();
 
-					dates.push({
+					foundSemesters.push({
 						"year": year,
 						"semester": semesterDescription,
 						"dateRange": sanitizedDateRange
@@ -173,14 +176,54 @@ var getSemesterDates = function() {
 
 				// Report information about fetched data to the user
 
-				var resultString = "";
-				if (dates.length > 1) {
-					resultString = '<p class="success">Successfully retrieved '+dates.length.toString()+' date sets from UoM</p>';
+				if (foundSemesters.length > 1) {
+					// bazinga, we got some dates
+
+					// First, pre-process the dates to try and find the most
+					// useful semester to set as selected by default
+					//
+					// the 'most useful' semester is simply defined as
+					// the one with the start date closest to right now.
+					// a slightly more useful way to calculate this might
+					// be to also check if the current date is within one
+					// of the semester date ranges.
+					var bestDefaultSemesterIndex = undefined;
+					var lowestSemesterStartDistance = undefined;
+					for (var i = 0; i < foundSemesters.length; i++ ) {
+						var date = foundSemesters[i];
+
+						// do a bit of a safety check first, to avoid any errors
+						// caused here by weird data - want to make sure even
+						// in this case that at least something gets put into
+						// the checkbox afterwards
+						if (date["dateRange"] && $.type(date["dateRange"] === "string")) {
+							var splitDates = date["dateRange"].split(',');
+							if (splitDates.length < 2) {
+								console.log("default semester detection - could not find two dates in date range string '" + date["dateRange"] + "' (foundSemesters index " + i.toString() + " of " + foundSemesters.length.toString() + ")");
+								continue;
+							}
+							var parsedStartDate = new Date(splitDates[0]);
+							var parsedEndDate = new Date(splitDates[1]);
+							var rightNow = new Date();
+
+
+							var semesterStartDistance = Math.abs(rightNow.getTime() - parsedStartDate.getTime());
+
+							if ((lowestSemesterStartDistance == undefined) || (semesterStartDistance < lowestSemesterStartDistance)) {
+								lowestSemesterStartDistance = semesterStartDistance;
+								bestDefaultSemesterIndex = i;
+							}
+						}
+					};
+
+					var resultString = '<p class="success">Successfully retrieved '+foundSemesters.length.toString()+' date sets from UoM</p>';
 					resultString +='<select id="semesterDates">';
-					for (var i = 0; i < dates.length; i++ ) {
-						var date = dates[i];
+					for (var i = 0; i < foundSemesters.length; i++ ) {
+						var date = foundSemesters[i];
 						console.log("Found semester: "+JSON.stringify(date));
-						resultString += "<option value=\""+date["dateRange"]+"\" >";
+
+						var isSemesterSelected = (bestDefaultSemesterIndex !== undefined && i == bestDefaultSemesterIndex) ? true : false;
+						resultString += "<option value=\""+date["dateRange"]+"\" " + (isSemesterSelected ? "selected" : "") + ">";
 						resultString += date["year"] + ": " + date["semester"];
 						resultString += "</option>";
 					};
