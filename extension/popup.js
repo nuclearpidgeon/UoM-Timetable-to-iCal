@@ -183,7 +183,10 @@ var getSemesterDates = function() {
 					// useful semester to set as selected by default
 					//
 					// the 'most useful' semester is simply defined as
-					// the one with the start date closest to right now
+					// the one with the start date closest to right now.
+					// a slightly more useful way to calculate this might
+					// be to also check if the current date is within one
+					// of the semester date ranges.
 					var bestDefaultSemesterIndex = undefined;
 					var lowestSemesterStartDistance = undefined;
 					for (var i = 0; i < foundSemesters.length; i++ ) {
